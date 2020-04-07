@@ -13,14 +13,17 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "course")
+@Table(name = "group_set")
+public class GroupSet {
 
-//список курсов
-public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    // номер курса
-    private int number;
 
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
+
+    //номер потока
+    private int number;
 }

@@ -25,8 +25,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<Group> getGroupsByCourse(Long course) {
-        List<Group> list = groupRepository.getAllByCourse_Id(course);
-        return list;
+    public List<Group> getGroupsByGroupSet(Long id) {
+        return groupRepository.getAllByGroupSet_Id(id);
     }
 }

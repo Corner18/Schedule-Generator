@@ -20,10 +20,12 @@ public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    // номер группы
+    // курс группы
     @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
+    @JoinColumn(name = "group_set_id")
+    private GroupSet groupSet;
     // кол-во студентов в группе
-    private int count_of_students;
+    private Integer count_of_students;
+    //номер группы
+    private String number;
 }

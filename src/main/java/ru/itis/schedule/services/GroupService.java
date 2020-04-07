@@ -7,5 +7,5 @@ import java.util.List;
 public interface GroupService {
     List<Group> getGroups();
     void save(Group group);
-    List<Group> getGroupsByCourse(Long couse);
+    List<Group> getGroupsByGroupSet(Long id);
 }

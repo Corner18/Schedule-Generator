@@ -6,5 +6,5 @@ import ru.itis.schedule.models.Group;
 import java.util.List;
 
 public interface GroupRepository extends JpaRepository<Group, Long> {
-    List<Group> getAllByCourse_Id(Long courseId);
+    List<Group> getAllByGroupSet_Id(Long id);
 }

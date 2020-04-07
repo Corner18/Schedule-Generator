@@ -2,7 +2,9 @@ package ru.itis.schedule.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.itis.schedule.models.Group;
 import ru.itis.schedule.models.MainSubject;
+import ru.itis.schedule.models.SubjectSet;
 import ru.itis.schedule.repositories.MainSubjectRepository;
 
 import java.util.List;
@@ -12,6 +14,12 @@ public class MainSubjectServiceImpl implements MainSubjectService {
 
     @Autowired
     private MainSubjectRepository mainSubjectRepository;
+
+    @Autowired
+    private SubjectSetService subjectSetService;
+
+    @Autowired
+    private GroupService groupService;
 
     @Override
     public void save(MainSubject mainSubject) {
@@ -25,13 +33,27 @@ public class MainSubjectServiceImpl implements MainSubjectService {
     }
 
     @Override
-    public List<MainSubject> getMainSubjectByGroupId(Long groupId) {
-        List<MainSubject> list = mainSubjectRepository.getAllByGroup_Id(groupId);
-        return list;
+    public MainSubject getById(Long id) {
+        return mainSubjectRepository.getOne(id);
     }
 
     @Override
-    public MainSubject getById(Long id) {
-        return mainSubjectRepository.getOne(id);
+    public List<MainSubject> getMainSubjectBySubjectSetId(Long id) {
+        return mainSubjectRepository.getAllBySubjectSet_Id(id);
+    }
+
+    @Override
+    public void generate() {
+        List<SubjectSet> subjectSets = subjectSetService.getSubjectSets();
+        for (SubjectSet subjectSet : subjectSets){
+            List<Group> groups = groupService.getGroupsByGroupSet(subjectSet.getGroupSet().getId());
+            for(Group group : groups){
+                MainSubject mainSubject = MainSubject.builder()
+                        .subjectSet(subjectSet)
+                        .group(group)
+                        .build();
+                mainSubjectRepository.save(mainSubject);
+            }
+        }
     }
 }

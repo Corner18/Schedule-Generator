@@ -1,6 +1,7 @@
 package ru.itis.schedule.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.itis.schedule.models.MainSubject;
@@ -23,16 +24,22 @@ public class MainSubjectController {
 
     @GetMapping
     public ResponseEntity<List<MainSubject>> getMainSubject(){
-        return ResponseEntity.ok(mainSubjectService.getMainSubjects());
+        return new ResponseEntity<>(mainSubjectService.getMainSubjects(), HttpStatus.OK);
     }
 
-    @GetMapping("/group-id/{group}")
-    public ResponseEntity<List<MainSubject>> getMainSubjectByGroup(@PathVariable("group") Long group){
-        return ResponseEntity.ok(mainSubjectService.getMainSubjectByGroupId(group));
+    @GetMapping("/subject-set-id/{id}")
+    public ResponseEntity<List<MainSubject>> getMainSubjectByGroup(@PathVariable("id") Long id){
+        return new ResponseEntity<>(mainSubjectService.getMainSubjectBySubjectSetId(id), HttpStatus.OK);
     }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<MainSubject> getMainSubjectById(@PathVariable("id") Long id){
-        return ResponseEntity.ok(mainSubjectService.getById(id));
+        return new ResponseEntity<>(mainSubjectService.getById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/generate")
+    public ResponseEntity<?> generate(){
+        mainSubjectService.generate();
+        return ResponseEntity.accepted().build();
     }
 }

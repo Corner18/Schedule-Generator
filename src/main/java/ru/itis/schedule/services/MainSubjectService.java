@@ -7,6 +7,7 @@ import java.util.List;
 public interface MainSubjectService {
     void save(MainSubject mainSubject);
     List<MainSubject> getMainSubjects();
-    List<MainSubject> getMainSubjectByGroupId(Long groupId);
+    List<MainSubject> getMainSubjectBySubjectSetId(Long id);
     MainSubject getById(Long id);
+    void generate();
 }

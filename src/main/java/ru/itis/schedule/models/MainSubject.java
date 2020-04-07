@@ -21,10 +21,11 @@ public class MainSubject {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "subject_id")
-    private Subject subject;
+    @JoinColumn(name = "subject_set_id")
+    private SubjectSet subjectSet;
 
     @ManyToOne
     @JoinColumn(name = "group_id")
     private Group group;
+
 }

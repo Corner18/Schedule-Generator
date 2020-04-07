@@ -1,6 +1,7 @@
 package ru.itis.schedule.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ public class CourseController {
 
     @GetMapping
     public ResponseEntity<List<Course>> getCources(){
-        return ResponseEntity.ok(courseService.getCources());
+        return new ResponseEntity<>(courseService.getCources(), HttpStatus.OK);
     }
 
     @PostMapping

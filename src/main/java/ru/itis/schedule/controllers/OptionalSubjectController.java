@@ -1,6 +1,7 @@
 package ru.itis.schedule.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.itis.schedule.models.OptionalSubject;
@@ -23,16 +24,16 @@ public class OptionalSubjectController {
 
     @GetMapping
     public ResponseEntity<List<OptionalSubject>> getOptionalSubjects(){
-        return ResponseEntity.ok(optionalSubjectService.getOptionalSubject());
+        return new ResponseEntity<>(optionalSubjectService.getOptionalSubject(), HttpStatus.OK);
     }
 
     @GetMapping("/course-id/{course}")
     public ResponseEntity<List<OptionalSubject>> getOptionalSubjectsByCourseId(@PathVariable("course") Long course){
-        return ResponseEntity.ok(optionalSubjectService.getOptionalSubjectByCourseId(course));
+        return new ResponseEntity<>(optionalSubjectService.getOptionalSubjectByCourseId(course), HttpStatus.OK);
     }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<OptionalSubject> getOptionalSubjectsByIf(@PathVariable("id") Long id){
-        return ResponseEntity.ok(optionalSubjectService.getById(id));
+        return new ResponseEntity<>(optionalSubjectService.getById(id), HttpStatus.OK);
     }
 }

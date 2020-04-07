@@ -9,5 +9,7 @@ public interface AuditoryResourceService {
     void save(AuditoryResource auditoryResource);
     List<AuditoryResource> getAuditoryResourcesByAuditoryId(Long auditoryId);
     List<AuditoryResource> getAuditoryResourcesByTimeSlotId(Long timesloId);
+    void generate();
+    void delete(Long id);
 
 }

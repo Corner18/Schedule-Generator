@@ -8,4 +8,5 @@ public interface TimeslotService {
     void save(Timeslot timeslot);
     List<Timeslot> getTimeSlots();
     Timeslot getTimeSlotById(Long id);
+    void generateTimeSlots();
 }

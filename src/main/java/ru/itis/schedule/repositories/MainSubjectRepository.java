@@ -7,5 +7,5 @@ import ru.itis.schedule.models.MainSubject;
 import java.util.List;
 
 public interface MainSubjectRepository extends JpaRepository<MainSubject, Long> {
-    List<MainSubject> getAllByGroup_Id(Long groupId);
+    List<MainSubject> getAllBySubjectSet_Id(Long id);
 }

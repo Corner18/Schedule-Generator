@@ -1,6 +1,7 @@
 package ru.itis.schedule.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +19,11 @@ public class TimeSlotTimeController {
 
     @GetMapping
     public ResponseEntity<List<TimeslotTime>> getTimeSlots(){
-        return ResponseEntity.ok(timeslotTimeService.getTimeslotTime());
+        return new ResponseEntity<>(timeslotTimeService.getTimeslotTime(), HttpStatus.OK);
     }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<TimeslotTime> getTimeSlotById(@PathVariable("id") Long id){
-        return ResponseEntity.ok(timeslotTimeService.getByTimeslotTimeId(id));
+        return new ResponseEntity<>(timeslotTimeService.getByTimeslotTimeId(id), HttpStatus.OK);
     }
 }

@@ -27,4 +27,8 @@ public class OptionalSubject {
     private Course course;
     //кол-во учеников на данном предмете
     private int count_of_students;
+
+    @ManyToOne
+    @JoinColumn(name = "professor_id")
+    private Professor professor;
 }

@@ -1,6 +1,7 @@
 package ru.itis.schedule.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.itis.schedule.models.Auditory;
@@ -17,7 +18,7 @@ public class AuditoryContorller {
 
     @GetMapping
     public ResponseEntity<List<Auditory>> getAuditories(){
-        return ResponseEntity.ok(auditoryService.getAuditories());
+        return new ResponseEntity<>(auditoryService.getAuditories(), HttpStatus.OK);
     }
 
     @PostMapping
@@ -29,7 +30,7 @@ public class AuditoryContorller {
     @GetMapping("/id/{auditory}")
     public ResponseEntity<Auditory> getAuditoryById(
             @PathVariable("auditory") Long auditory){
-        return ResponseEntity.ok(auditoryService.getById(auditory));
+        return new ResponseEntity<>(auditoryService.getById(auditory), HttpStatus.OK);
     }
 
 }

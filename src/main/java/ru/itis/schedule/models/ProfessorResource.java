@@ -25,4 +25,7 @@ public class ProfessorResource {
     @ManyToOne
     @JoinColumn(name = "timeslot_id")
     private Timeslot timeslot;
+
+    // колво групп на экзамене за один раз
+    private int count;
 }

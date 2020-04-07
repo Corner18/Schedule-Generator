@@ -1,6 +1,7 @@
 package ru.itis.schedule.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.itis.schedule.models.Group;
@@ -23,11 +24,11 @@ public class GroupController {
 
     @GetMapping
     public ResponseEntity<List<Group>> getGroups(){
-        return ResponseEntity.ok(groupService.getGroups());
+        return new ResponseEntity<>(groupService.getGroups(), HttpStatus.OK);
     }
 
-    @GetMapping("/course-id/{course}")
-    public ResponseEntity<List<Group>> getGroupsByCourse(@PathVariable("course") Long course){
-        return ResponseEntity.ok(groupService.getGroupsByCourse(course));
+    @GetMapping("/groupset-id/{id}")
+    public ResponseEntity<List<Group>> getGroupsByCourse(@PathVariable("id") Long id){
+        return new ResponseEntity<>(groupService.getGroupsByGroupSet(id), HttpStatus.OK);
     }
 }

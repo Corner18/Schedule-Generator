@@ -29,8 +29,8 @@ public class TimeslotDayServiceImpl implements TimeslotDayService {
     @Override
     public void setPeriod(TimeslotDayDto timeslotDayDto) {
         TimeslotDay timeslotDay;
-        LocalDate begin = timeslotDayDto.getBegin();
-        LocalDate end = timeslotDayDto.getEnd();
+        LocalDate begin = LocalDate.parse(timeslotDayDto.getBegin());
+        LocalDate end = LocalDate.parse(timeslotDayDto.getEnd());
         while (!(begin.equals(end))) {
             timeslotDay = TimeslotDay.builder()
                     .date(begin)

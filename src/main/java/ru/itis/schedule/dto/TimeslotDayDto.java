@@ -10,6 +10,6 @@ import java.time.LocalDate;
 @Builder
 @Getter
 public class TimeslotDayDto {
-    LocalDate begin;
-    LocalDate end;
+    String begin;
+    String end;
 }

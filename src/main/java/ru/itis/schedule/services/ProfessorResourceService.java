@@ -9,4 +9,5 @@ public interface ProfessorResourceService {
     List<ProfessorResource> getProfessorResources();
     List<ProfessorResource> getProfessorResourcesByTimeslotId(Long timeslotId);
     List<ProfessorResource> getProfessorResourcesByProfessorId(Long professorId);
+    void generate();
 }

@@ -1,6 +1,7 @@
 package ru.itis.schedule.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.itis.schedule.models.AuditoryResource;
@@ -29,12 +30,26 @@ public class AuditoryResourceController {
     @GetMapping("/auditory-id/{auditory}")
     public ResponseEntity<List<AuditoryResource>> getAuditoryResourcesByAuditoryId(
             @PathVariable("auditory") Long auditory){
-        return ResponseEntity.ok(auditoryResourceService.getAuditoryResourcesByAuditoryId(auditory));
+        return new ResponseEntity<>(auditoryResourceService.getAuditoryResourcesByAuditoryId(auditory), HttpStatus.OK);
     }
 
     @GetMapping("/timeslot-id/{timeslot}")
     public ResponseEntity<List<AuditoryResource>> getAuditoryResourcesByTimeslotId(
             @PathVariable("timeslot") Long timeslot){
-        return ResponseEntity.ok(auditoryResourceService.getAuditoryResourcesByTimeSlotId(timeslot));
+        return new ResponseEntity<>(auditoryResourceService.getAuditoryResourcesByTimeSlotId(timeslot), HttpStatus.OK);
     }
+
+    @GetMapping("/generate")
+    public ResponseEntity<?> generate(){
+        auditoryResourceService.generate();
+        return ResponseEntity.accepted().build();
+    }
+
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<?> deleteAuditory(@PathVariable("is") Long id){
+        auditoryResourceService.delete(id);
+        return ResponseEntity.accepted().build();
+    }
+
+
 }

@@ -1,11 +1,9 @@
 package ru.itis.schedule.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.itis.schedule.dto.TimeslotDayDto;
 import ru.itis.schedule.models.TimeslotDay;
 import ru.itis.schedule.services.TimeslotDayService;
@@ -26,13 +24,13 @@ public class TimeSlotDayController {
     }
 
     @PostMapping("/set-period")
-    public ResponseEntity<?> setPeriod(TimeslotDayDto timeslotDayDto){
+    public ResponseEntity<?> setPeriod(@RequestBody TimeslotDayDto timeslotDayDto){
         timeslotDayService.setPeriod(timeslotDayDto);
         return ResponseEntity.accepted().build();
     }
 
     @GetMapping
     public ResponseEntity<List<TimeslotDay>> getTimeSlots(){
-        return ResponseEntity.ok(timeslotDayService.getTimeSlotDays());
+        return new ResponseEntity<>(timeslotDayService.getTimeSlotDays(), HttpStatus.OK);
     }
 }

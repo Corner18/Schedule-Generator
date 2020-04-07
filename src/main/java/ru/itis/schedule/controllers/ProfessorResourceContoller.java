@@ -1,6 +1,7 @@
 package ru.itis.schedule.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.itis.schedule.models.ProfessorResource;
@@ -23,18 +24,24 @@ public class ProfessorResourceContoller {
 
     @GetMapping
     public ResponseEntity<List<ProfessorResource>> getProfessorResources(){
-        return ResponseEntity.ok(professorResourceService.getProfessorResources());
+        return new ResponseEntity<>(professorResourceService.getProfessorResources(), HttpStatus.OK);
     }
 
     @GetMapping("/professor-id/{professor}")
     public ResponseEntity<List<ProfessorResource>> getProfessorResourcesByProfessorId(
             @PathVariable("professor") Long professor){
-        return ResponseEntity.ok(professorResourceService.getProfessorResourcesByProfessorId(professor));
+        return new ResponseEntity<>(professorResourceService.getProfessorResourcesByProfessorId(professor), HttpStatus.OK);
     }
 
     @GetMapping("/timeslot-id/{timeslot}")
     public ResponseEntity<List<ProfessorResource>> getProfessorResourcesByTimeslotId(
             @PathVariable("timeslot") Long timeslot){
-        return ResponseEntity.ok(professorResourceService.getProfessorResourcesByTimeslotId(timeslot));
+        return new ResponseEntity<>(professorResourceService.getProfessorResourcesByTimeslotId(timeslot), HttpStatus.OK);
+    }
+
+    @GetMapping("/generate")
+    public ResponseEntity<?> generate(){
+        professorResourceService.generate();
+        return ResponseEntity.accepted().build();
     }
 }
