@@ -26,6 +26,5 @@ public class ProfessorResource {
     @JoinColumn(name = "timeslot_id")
     private Timeslot timeslot;
 
-    // колво групп на экзамене за один раз
-    private int count;
+
 }

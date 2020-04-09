@@ -62,4 +62,9 @@ public class AuditoryResourceServiceImpl implements AuditoryResourceService {
     public void delete(Long id) {
         auditoryResourceRepository.deleteById(id);
     }
+
+    @Override
+    public AuditoryResource getByAuditoryIdAndTimeslotId(Long timeslotId, Long auditoryId) {
+        return auditoryResourceRepository.getByAuditory_IdAndTimeslot_Id(auditoryId, timeslotId);
+    }
 }

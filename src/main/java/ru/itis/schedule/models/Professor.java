@@ -19,6 +19,10 @@ public class Professor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     //имя преподавателя
     private String name;
+
+    // колво групп на экзамене за один раз
+    private int count;
 }

@@ -51,10 +51,14 @@ public class ProfessorResourceServiceImpl implements ProfessorResourceService {
                 ProfessorResource professorResource = ProfessorResource.builder()
                         .professor(professor)
                         .timeslot(timeslot)
-                        .count(1)
                         .build();
                 professorResourceRepository.save(professorResource);
             }
         }
+    }
+
+    @Override
+    public ProfessorResource getByProfessorIdAndTimeslotId(Long timeslotId, Long professorId) {
+        return professorResourceRepository.getByProfessor_IdAndTimeslot_Id(professorId,timeslotId);
     }
 }

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface GroupRepository extends JpaRepository<Group, Long> {
     List<Group> getAllByGroupSet_Id(Long id);
+    List<Group> getAllByGroupSet_Course_Id(Long courseId);
 }

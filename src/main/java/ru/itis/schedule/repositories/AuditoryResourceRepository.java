@@ -8,4 +8,5 @@ import java.util.List;
 public interface AuditoryResourceRepository extends JpaRepository<AuditoryResource, Long> {
     List<AuditoryResource> getAllByAuditory_Id(Long auditoryId);
     List<AuditoryResource> getAllByTimeslot_Id(Long timeslotId);
+    AuditoryResource getByAuditory_IdAndTimeslot_Id(Long auditoryId, Long timeslotId);
 }
