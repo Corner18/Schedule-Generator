@@ -31,5 +31,13 @@ GET http://localhost:8080/main-subjects/generate
 GET http://localhost:8080/professors/resources/generate
 
 ###
+// можно генерировать
+
+GET http://localhost:8080/generate
+
+###
+// показать готовое расписание
+
+GET http://localhost:8080/exams
 
 ###

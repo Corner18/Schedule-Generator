@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.itis.schedule.dto.ExamDto;
 import ru.itis.schedule.models.Exam;
 import ru.itis.schedule.services.ExamService;
 
@@ -20,8 +21,8 @@ public class ExamController {
     private ExamService examService;
 
     @GetMapping
-    public ResponseEntity<List<Exam>> getExams(){
-        return new ResponseEntity<>(examService.getExams(), HttpStatus.OK);
+    public ResponseEntity<List<ExamDto>> getExams(){
+        return new ResponseEntity<>(examService.getExamsDto(), HttpStatus.OK);
     }
 
     @PostMapping
@@ -29,4 +30,5 @@ public class ExamController {
         examService.save(exam);
         return ResponseEntity.accepted().build();
     }
+
 }

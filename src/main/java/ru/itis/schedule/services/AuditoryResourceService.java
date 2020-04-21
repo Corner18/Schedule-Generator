@@ -12,5 +12,6 @@ public interface AuditoryResourceService {
     AuditoryResource getByAuditoryIdAndTimeslotId(Long timeslotId, Long auditoryId);
     void generate();
     void delete(Long id);
+    void deleteByAuditoryAndTimeslot(Long auditoryId, Long timeslotId);
 
 }

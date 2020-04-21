@@ -61,4 +61,9 @@ public class ProfessorResourceServiceImpl implements ProfessorResourceService {
     public ProfessorResource getByProfessorIdAndTimeslotId(Long timeslotId, Long professorId) {
         return professorResourceRepository.getByProfessor_IdAndTimeslot_Id(professorId,timeslotId);
     }
+
+    @Override
+    public void delete(ProfessorResource professorResource) {
+        professorResourceRepository.delete(professorResource);
+    }
 }

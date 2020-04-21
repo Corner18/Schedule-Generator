@@ -9,5 +9,7 @@ public interface MainSubjectService {
     List<MainSubject> getMainSubjects();
     List<MainSubject> getMainSubjectBySubjectSetId(Long id);
     MainSubject getById(Long id);
+    List<MainSubject> getAllByCourseId(Long courseId);
+    List<MainSubject> getAllByGroupId(Long gtoupId);
     void generate();
 }

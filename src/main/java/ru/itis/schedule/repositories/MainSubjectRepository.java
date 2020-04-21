@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface MainSubjectRepository extends JpaRepository<MainSubject, Long> {
     List<MainSubject> getAllBySubjectSet_Id(Long id);
+    List<MainSubject> getAllBySubjectSet_GroupSet_Course_Id(Long courseId);
+    List<MainSubject> getAllByGroup_Id(Long groupId);
 }

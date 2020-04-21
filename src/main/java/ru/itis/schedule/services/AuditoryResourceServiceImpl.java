@@ -67,4 +67,13 @@ public class AuditoryResourceServiceImpl implements AuditoryResourceService {
     public AuditoryResource getByAuditoryIdAndTimeslotId(Long timeslotId, Long auditoryId) {
         return auditoryResourceRepository.getByAuditory_IdAndTimeslot_Id(auditoryId, timeslotId);
     }
+
+    @Override
+    public void deleteByAuditoryAndTimeslot(Long auditoryId, Long timeslotId) {
+        AuditoryResource auditoryResource = AuditoryResource.builder()
+                .auditory(auditoryService.getById(auditoryId))
+                .timeslot(timeslotService.getTimeSlotById(timeslotId))
+                .build();
+        auditoryResourceRepository.delete(auditoryResource);
+    }
 }

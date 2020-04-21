@@ -3,6 +3,7 @@ package ru.itis.schedule.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.itis.schedule.models.*;
+import ru.itis.schedule.repositories.RestrictionRepository;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -16,19 +17,34 @@ public class RestrictionServiceImpl implements RestrictionService {
     @Autowired
     private ProfessorResourceService professorResourceService;
 
+    @Autowired
+    private RestrictionRepository restrictionRepository;
+
     //TODO: методам плохо, так не пойдет, переделай обязательно
 
     @Override
-    public boolean isOneExamInAuditory(List<Exam> exams) {
-        // создаю сет ячеек аудитория-время
-        Set<AuditoryResource> auditoryResources = new HashSet<>();
+    public boolean isLimitedExamInAuditory(List<Exam> exams) {
+
+        Map<AuditoryResource, Integer> map1 = new HashMap<>(); //колво экзаменов в аудитории
+        Map<AuditoryResource, Professor> map2 = new HashMap<>(); // приклеиваем каждой ячейке расписания своего профессора
+        AuditoryResource auditoryResource;
         for (Exam exam : exams) {
-            AuditoryResource auditoryResource = AuditoryResource.builder()
+            auditoryResource = AuditoryResource.builder()
                     .timeslot(exam.getTimeslot())
                     .auditory(exam.getAuditory())
                     .build();
-            if (!auditoryResources.add(auditoryResource))
-                return false;
+            if (!map2.containsKey(auditoryResource)) { // если в этой ячейке расписания еще нет профессора
+                map2.put(auditoryResource, exam.getProfessor()); // кладем в ячейку профессора
+                map1.put(auditoryResource, 1); // говорим что пока в эту ячейку раписания проводится только один экзамен
+            } else { // если уже был экзамен в это же время в этой же аудитории
+                if (exam.getProfessor().equals(map2.get(auditoryResource))) { // проверяем с этим ли преподом был экзамен
+                    map1.put(auditoryResource, map1.get(auditoryResource) + 1); // если с ним, то уведичиваем колво экзаменов в этой ячейке
+                } else {
+                    return false; //если не выполнился предыдущий иф, значит в одной ячейке расписания экзамен у рахных преподов. Это плохо
+                }
+            }
+            if (map1.get(auditoryResource) > exam.getProfessor().getCount())
+                return false; // если колво экзаменов у одного препода в одну временную ячейку больше, чем хотел препод, возвращаем фолс
         }
         return true;
     }
@@ -60,12 +76,12 @@ public class RestrictionServiceImpl implements RestrictionService {
     }
 
     @Override
-    public boolean isGapBetweenExams(List<Exam> exams, int gap) {
+    public boolean isGapBetweenExams(List<Exam> exams) {
         //метод возращает мапу группа-даты экзаменов
         Map<Group, List<TimeslotDay>> map = getMapGroupExam(exams);
         // для каждой группы проверяется расстояние между экзаменами
         for (Group group : map.keySet()) {
-            if (!checkGaps(map.get(group), gap)) {
+            if (!checkGaps(map.get(group), 3)) {
                 return false;
             }
         }
@@ -92,9 +108,11 @@ public class RestrictionServiceImpl implements RestrictionService {
     @Override
     public boolean isProfessorsCan(List<Exam> exams) {
         for (Exam exam : exams) {
-            if (professorResourceService.getByProfessorIdAndTimeslotId(
-                    exam.getTimeslot().getId(), exam.getProfessor().getId()) == null) {
-                return false;
+            if(exam.getMainSubject() != null){ // только у преподов обязательных предметов
+                if (professorResourceService.getByProfessorIdAndTimeslotId(
+                        exam.getTimeslot().getId(), exam.getProfessor().getId()) == null) {
+                    return false;
+                }
             }
         }
         return true;
@@ -134,6 +152,9 @@ public class RestrictionServiceImpl implements RestrictionService {
                     map.put(exam.getMainSubject().getGroup(), timeslotDays);
                 }
             }
+        }
+
+        for (Exam exam : exams) {
             if (exam.getOptionalSubject() != null) {
                 // если это предмет по выбору, то достаем все группы этого курса( курс типа первый, второй и тд)
                 List<Group> groups = groupService.getAllByCourseId(exam.getOptionalSubject().getCourse().getId());
@@ -149,7 +170,9 @@ public class RestrictionServiceImpl implements RestrictionService {
                         map.put(group, timeslotDays);
                     }
                 }
+                break;
             }
+
         }
         return map;
     }
@@ -180,4 +203,34 @@ public class RestrictionServiceImpl implements RestrictionService {
         return map;
     }
 
+    @Override
+    public void fillRestrictionTable(List<Exam> exams) {
+        List<Restriction> restrictions = restrictionRepository.findAll();
+        for (Restriction restriction : restrictions) {
+            if (restriction.getName().equals("isOneExamInAuditory")) {
+                restriction.setEnabled(isLimitedExamInAuditory(exams));
+                restrictionRepository.save(restriction);
+            }
+            if (restriction.getName().equals("isLimitedExamsAtProfessor")) {
+                restriction.setEnabled(isLimitedExamsAtProfessor(exams));
+                restrictionRepository.save(restriction);
+            }
+            if (restriction.getName().equals("isGapBetweenExams")) {
+                restriction.setEnabled(isGapBetweenExams(exams));
+                restrictionRepository.save(restriction);
+            }
+            if (restriction.getName().equals("isAuditoryCapasityBigerStidentCount")) {
+                restriction.setEnabled(isAuditoryCapasityBigerStidentCount(exams));
+                restrictionRepository.save(restriction);
+            }
+            if (restriction.getName().equals("isProfessorsCan")) {
+                restriction.setEnabled(isProfessorsCan(exams));
+                restrictionRepository.save(restriction);
+            }
+            if (restriction.getName().equals("isOptionalSubjectsInOneDay")) {
+                restriction.setEnabled(isOptionalSubjectsInOneDay(exams));
+                restrictionRepository.save(restriction);
+            }
+        }
+    }
 }

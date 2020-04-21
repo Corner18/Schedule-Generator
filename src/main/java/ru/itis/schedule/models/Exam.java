@@ -39,4 +39,8 @@ public class Exam {
     @ManyToOne
     @JoinColumn(name = "timeslot_id")
     private Timeslot timeslot;
+
+    @ManyToOne
+    @JoinColumn(name = "schedule_id")
+    private Schedule schedule;
 }

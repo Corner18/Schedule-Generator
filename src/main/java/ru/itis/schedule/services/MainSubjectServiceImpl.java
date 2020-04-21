@@ -56,4 +56,14 @@ public class MainSubjectServiceImpl implements MainSubjectService {
             }
         }
     }
+
+    @Override
+    public List<MainSubject> getAllByCourseId(Long courseId) {
+        return mainSubjectRepository.getAllBySubjectSet_GroupSet_Course_Id(courseId);
+    }
+
+    @Override
+    public List<MainSubject> getAllByGroupId(Long gtoupId) {
+        return mainSubjectRepository.getAllByGroup_Id(gtoupId);
+    }
 }
