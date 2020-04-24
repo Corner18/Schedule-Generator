@@ -70,10 +70,7 @@ public class AuditoryResourceServiceImpl implements AuditoryResourceService {
 
     @Override
     public void deleteByAuditoryAndTimeslot(Long auditoryId, Long timeslotId) {
-        AuditoryResource auditoryResource = AuditoryResource.builder()
-                .auditory(auditoryService.getById(auditoryId))
-                .timeslot(timeslotService.getTimeSlotById(timeslotId))
-                .build();
+        AuditoryResource auditoryResource = auditoryResourceRepository.getByAuditory_IdAndTimeslot_Id(auditoryId, timeslotId);
         auditoryResourceRepository.delete(auditoryResource);
     }
 }

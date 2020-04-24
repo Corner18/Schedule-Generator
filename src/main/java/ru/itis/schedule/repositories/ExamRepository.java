@@ -9,4 +9,5 @@ import java.util.List;
 public interface ExamRepository extends JpaRepository<Exam, Long> {
     List<Exam> getAllByMainSubject_Group_Id(Long groupId);
     List<Exam> getAllByOptionalSubject_Course_Id(Long courseId);
+    List<Exam> getAllByProfessor_IdAndTimeslot_Id(Long professorId, Long timeslotId);
 }

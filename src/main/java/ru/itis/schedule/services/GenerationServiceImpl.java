@@ -10,6 +10,7 @@ import java.util.Map;
 
 @Component
 public class GenerationServiceImpl implements GenerationService {
+    
 
     @Autowired
     private OptionalSubjectService optionalSubjectService;
@@ -55,8 +56,6 @@ public class GenerationServiceImpl implements GenerationService {
             if (getAddedExams(group) == countExam) {
                 break;
             } else {
-                // количество расставленных экзаменов пока равно нулю
-                int addedExams = 0;
                 // получили список всех предметов по выбору
                 List<OptionalSubject> optionalSubjects = optionalSubjectService.getOptionalSubjectByCourseId(
                         group.getGroupSet().getCourse().getId());
@@ -64,17 +63,18 @@ public class GenerationServiceImpl implements GenerationService {
                 List<MainSubject> mainSubjects = mainSubjectService.getAllByGroupId(group.getId());
                 // сначала расставляем все предметы по выбору
                 for (OptionalSubject optionalSubject : optionalSubjects) {
-                    Exam exam = Exam.builder()
-                            .optionalSubject(optionalSubject)
-                            .professor(optionalSubject.getProfessor())
-                            .build();
-                    AuditoryResource auditoryResource = getPossibleTimeSlotForOptional(group, optionalSubject.getCount_of_students(),
-                            optionalSubject.getProfessor());
-                    if (auditoryResource != null) {
-                        exam.setTimeslot(auditoryResource.getTimeslot());
-                        exam.setAuditory(auditoryResource.getAuditory());
-                        examService.save(exam);
-                        addedExams++;
+                    if (!isOptionalSubjectAdded(optionalSubject)) {
+                        Exam exam = Exam.builder()
+                                .optionalSubject(optionalSubject)
+                                .professor(optionalSubject.getProfessor())
+                                .build();
+                        AuditoryResource auditoryResource = getPossibleTimeSlotForOptional(group, optionalSubject.getCount_of_students(),
+                                optionalSubject.getProfessor());
+                        if (auditoryResource != null) {
+                            exam.setTimeslot(auditoryResource.getTimeslot());
+                            exam.setAuditory(auditoryResource.getAuditory());
+                            examService.save(exam);
+                        }
                     }
                 }
                 // потом все основные предметы
@@ -97,28 +97,6 @@ public class GenerationServiceImpl implements GenerationService {
     }
 
 
-    //получаем мапу курс - все предметы по выбору
-    private Map<Long, List<OptionalSubject>> getMapCourseOptionalSubject() {
-        Map<Long, List<OptionalSubject>> map = new HashMap<>();
-        List<Course> courses = courseService.getCources();
-        for (Course course : courses) {
-            List<OptionalSubject> optionalSubjects = optionalSubjectService.getOptionalSubjectByCourseId(course.getId());
-            map.put(course.getId(), optionalSubjects);
-        }
-        return map;
-    }
-
-    //получаем мапу курс - основные предметы
-    private Map<Long, List<MainSubject>> getMapCourseMainSubject() {
-        Map<Long, List<MainSubject>> map = new HashMap<>();
-        List<Course> courses = courseService.getCources();
-        for (Course course : courses) {
-            List<MainSubject> mainSubjects = mainSubjectService.getAllByCourseId(course.getId());
-            map.put(course.getId(), mainSubjects);
-        }
-        return map;
-    }
-
     private int getExamCount(Group group) {
         List<MainSubject> mainSubjects = mainSubjectService.getAllByGroupId(group.getId());
         List<OptionalSubject> optionalSubjects = optionalSubjectService.getOptionalSubjectByCourseId(group.getGroupSet().getCourse().getId());
@@ -126,15 +104,22 @@ public class GenerationServiceImpl implements GenerationService {
 
     }
 
-    private int getMaxGap(Course course) {
-        //int examCount = getExamCount(course);
-        int sessionPeriod = timeslotDayService.getTimeSlotDays().size();
-        return 0;
-    }
-
     private int getAddedExams(Group group) {
         List<Exam> exams = examService.getExamsByGroup(group);
         return exams.size();
+    }
+
+    private boolean isOptionalSubjectAdded(OptionalSubject optionalSubject) {
+        List<Exam> exams = examService.getExams();
+        for (Exam exam : exams) {
+            if (exam.getOptionalSubject() != null) {
+                if (exam.getOptionalSubject().equals(optionalSubject)) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
     }
 
     private AuditoryResource getPossibleTimeSlotForOptional(Group group, int countOfStudent, Professor professor) {
@@ -149,7 +134,7 @@ public class GenerationServiceImpl implements GenerationService {
                     // если ячейка свободна и препод может в это время и вместительность аудитории позволяет
                     if (auditoryResource.getTimeslot().equals(professorResource.getTimeslot()) &&
                             auditoryResource.getAuditory().getCapasity() >= countOfStudent) {
-                        if(auditoryResource.getAuditory().getNumber() == 131){
+                        if (auditoryResource.getAuditory().getNumber() == 131) {
                             auditoryResourceService.deleteByAuditoryAndTimeslot(10L, auditoryResource.getTimeslot().getId());
                             auditoryResourceService.deleteByAuditoryAndTimeslot(11L, auditoryResource.getTimeslot().getId());
                         }
@@ -167,7 +152,7 @@ public class GenerationServiceImpl implements GenerationService {
                     if (auditoryResource.getTimeslot().getTimeslotDay().equals(timeslotDay) &&
                             auditoryResource.getTimeslot().equals(professorResource.getTimeslot()) &&
                             auditoryResource.getAuditory().getCapasity() >= countOfStudent) {
-                        if(auditoryResource.getAuditory().getNumber() == 131){
+                        if (auditoryResource.getAuditory().getNumber() == 131) {
                             auditoryResourceService.deleteByAuditoryAndTimeslot(10L, auditoryResource.getTimeslot().getId());
                             auditoryResourceService.deleteByAuditoryAndTimeslot(11L, auditoryResource.getTimeslot().getId());
                         }
@@ -191,6 +176,12 @@ public class GenerationServiceImpl implements GenerationService {
         if (exams.isEmpty()) {
             // бежим по всем временным ячейкам профессора
             for (ProfessorResource professorResource : professorResources) {
+                if(map.containsKey(professorResource)){
+                    List<Exam> exams1 = examService.getExamsByProfessorResource(professorResource);
+                    for (Exam exam : exams1){
+                        countOfStudent += exam.getMainSubject().getGroup().getCount_of_students();
+                    }
+                }
                 // бежим по всем ячейкам расписания
                 for (AuditoryResource auditoryResource : auditoryResources) {
                     // если ячейка свободна и препод может в это время и вместительность аудитории позволяет
@@ -202,9 +193,17 @@ public class GenerationServiceImpl implements GenerationService {
                         } else {
                             int i = map.get(professorResource);
                             map.put(professorResource, i + 1);
+                            List<Exam> exams1 = examService.getExamsByProfessorResource(professorResource);
+                            for (Exam exam : exams1){
+                                auditoryResourceService.save(AuditoryResource.builder().auditory(exam.getAuditory()).timeslot(exam.getTimeslot()).build());
+                                exam.setAuditory(auditoryResource.getAuditory());
+                                exam.setTimeslot(auditoryResource.getTimeslot());
+                                examService.update(exam);
+                            }
+
                         }
                         if (map.get(professorResource) == professor.getCount()) {
-                            if(auditoryResource.getAuditory().getNumber() == 131){
+                            if (auditoryResource.getAuditory().getNumber() == 131) {
                                 auditoryResourceService.deleteByAuditoryAndTimeslot(10L, auditoryResource.getTimeslot().getId());
                                 auditoryResourceService.deleteByAuditoryAndTimeslot(11L, auditoryResource.getTimeslot().getId());
                             }
@@ -218,6 +217,12 @@ public class GenerationServiceImpl implements GenerationService {
         } else {
             Timeslot last = exams.get(exams.size() - 1).getTimeslot(); // забрали дату последнего экзамена
             for (ProfessorResource professorResource : professorResources) {
+                if(map.containsKey(professorResource)){
+                    List<Exam> exams1 = examService.getExamsByProfessorResource(professorResource);
+                    for (Exam exam : exams1){
+                        countOfStudent += exam.getMainSubject().getGroup().getCount_of_students();
+                    }
+                }
                 for (AuditoryResource auditoryResource : auditoryResources) {
                     if ((auditoryResource.getTimeslot().getTimeslotDay().getDate().compareTo(last.getTimeslotDay().getDate()) >= 4) &&
                             auditoryResource.getTimeslot().equals(professorResource.getTimeslot()) &&
@@ -228,12 +233,19 @@ public class GenerationServiceImpl implements GenerationService {
                         } else {
                             int i = map.get(professorResource);
                             map.put(professorResource, i + 1);
+                            List<Exam> exams1 = examService.getExamsByProfessorResource(professorResource);
+                            for (Exam exam : exams1){
+                                auditoryResourceService.save(AuditoryResource.builder().auditory(exam.getAuditory()).timeslot(exam.getTimeslot()).build());
+                                exam.setAuditory(auditoryResource.getAuditory());
+                                exam.setTimeslot(auditoryResource.getTimeslot());
+                                examService.update(exam);
+                            }
                         }
                         if (map.get(professorResource) == professor.getCount()) {
-                            if(auditoryResource.getAuditory().getNumber() == 131){
+                            if (auditoryResource.getAuditory().getNumber() == 131) {
                                 auditoryResourceService.deleteByAuditoryAndTimeslot(10L, auditoryResource.getTimeslot().getId());
                                 auditoryResourceService.deleteByAuditoryAndTimeslot(11L, auditoryResource.getTimeslot().getId());
-                            }
+                             }
                             auditoryResourceService.delete(auditoryResource.getId());
                             professorResourceService.delete(professorResource);
                         }
@@ -244,6 +256,4 @@ public class GenerationServiceImpl implements GenerationService {
         }
         return null;
     }
-
-
 }

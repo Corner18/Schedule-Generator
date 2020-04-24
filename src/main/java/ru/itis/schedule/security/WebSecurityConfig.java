@@ -13,7 +13,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
-
         http.authorizeRequests()
                 .antMatchers("/auditories").permitAll()
                 .antMatchers("/auditories/id/{auditory}").permitAll()
@@ -47,10 +46,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/timeslots-day/set-period").permitAll()
                 .antMatchers("/timeslots-time").permitAll()
                 .antMatchers("/timeslots-time/id/{id}").permitAll();
-
-
-
-
     }
 
 }

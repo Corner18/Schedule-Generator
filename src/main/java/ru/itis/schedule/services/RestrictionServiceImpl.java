@@ -20,7 +20,7 @@ public class RestrictionServiceImpl implements RestrictionService {
     @Autowired
     private RestrictionRepository restrictionRepository;
 
-    //TODO: методам плохо, так не пойдет, переделай обязательно
+    // пока этот класс ничем не используется
 
     @Override
     public boolean isLimitedExamInAuditory(List<Exam> exams) {

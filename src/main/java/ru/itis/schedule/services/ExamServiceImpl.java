@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.itis.schedule.dto.ExamDto;
 import ru.itis.schedule.models.Exam;
 import ru.itis.schedule.models.Group;
+import ru.itis.schedule.models.ProfessorResource;
 import ru.itis.schedule.repositories.ExamRepository;
 
 import java.util.ArrayList;
@@ -53,5 +54,16 @@ public class ExamServiceImpl implements ExamService {
     public List<ExamDto> getExamsDto() {
         List<Exam> exams = examRepository.findAll();
         return ExamDto.from(exams);
+    }
+
+    @Override
+    public List<Exam> getExamsByProfessorResource(ProfessorResource professorResource) {
+        List<Exam> exams = examRepository.getAllByProfessor_IdAndTimeslot_Id(professorResource.getProfessor().getId(), professorResource.getTimeslot().getId());
+        return exams;
+    }
+
+    @Override
+    public void update(Exam exam) {
+        examRepository.save(exam);
     }
 }
