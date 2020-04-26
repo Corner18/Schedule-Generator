@@ -10,4 +10,5 @@ public interface TimeslotDayService {
     void save(TimeslotDay timeslotDay);
     List<TimeslotDay> getTimeSlotDays();
     void setPeriod(TimeslotDayDto timeslotDayDto);
+    TimeslotDay getOk(TimeslotDay timeslotDay);
 }

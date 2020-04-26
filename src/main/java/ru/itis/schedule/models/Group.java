@@ -28,4 +28,7 @@ public class Group {
     private Integer count_of_students;
     //номер группы
     private String number;
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
 }

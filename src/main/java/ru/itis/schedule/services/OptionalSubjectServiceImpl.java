@@ -5,7 +5,10 @@ import org.springframework.stereotype.Component;
 import ru.itis.schedule.models.OptionalSubject;
 import ru.itis.schedule.repositories.OptionalSubjectRepository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class OptionalSubjectServiceImpl implements OptionalSubjectService {
@@ -31,5 +34,21 @@ public class OptionalSubjectServiceImpl implements OptionalSubjectService {
     @Override
     public OptionalSubject getById(Long id) {
         return optionalSubjectRepository.getOne(id);
+    }
+
+    @Override
+    public Map<Integer, List<OptionalSubject>> getMap(Long courseId) {
+        List<OptionalSubject> optionalSubjects = optionalSubjectRepository.getAllByCourse_Id(courseId);
+        Map<Integer, List<OptionalSubject>> map = new HashMap<>();
+        for(OptionalSubject optionalSubject : optionalSubjects){
+            if (!map.containsKey(optionalSubject.getSet())){
+                List<OptionalSubject> list = new ArrayList<>();
+                list.add(optionalSubject);
+                map.put(optionalSubject.getSet(), list);
+            } else {
+                map.get(optionalSubject.getSet()).add(optionalSubject);
+            }
+        }
+        return map;
     }
 }

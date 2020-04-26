@@ -1,6 +1,7 @@
 package ru.itis.schedule.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import ru.itis.schedule.models.Group;
 import ru.itis.schedule.repositories.GroupRepository;
@@ -15,7 +16,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<Group> getGroups() {
-        List<Group> list = groupRepository.findAll();
+        List<Group> list = groupRepository.findAll(Sort.by(Sort.Direction.ASC,"id"));
         return list;
     }
 

@@ -31,4 +31,10 @@ public class OptionalSubject {
     @ManyToOne
     @JoinColumn(name = "professor_id")
     private Professor professor;
+    // потому что например джавалаб и введение в ии это разные группы
+    private int set;
+
+    //я не знаю как сделать англ по-другому. Просто у англа здесь будет стоять число 2
+    // и это займет два соседних дня в расписании
+    private int durationn;
 }
