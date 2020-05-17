@@ -1,0 +1,36 @@
+body {
+    background-color: #edeff2;
+}
+
+.d-flex.p-2.bd-highlight {
+    border: Window 2px;
+    align-content: center;
+}
+
+.text-center.border.border-light.p-5 {
+    background-color: #f8fafd;
+    margin-top: 50px;
+    border-radius: 5px;
+    position: absolute;
+}
+
+.form-control.mb-4 {
+    margin-right: 10%;
+    width: 275px;
+}
+
+.btn.btn-info.btn-block.my-4 {
+    background-color: #126220;
+    border-color: #126220;
+}
+
+.nav-signature {
+    font-weight: 400;
+    font-family: Georgia, cursive;
+    font-size: 40px;
+}
+
+.container {
+    margin-top: 20px;
+}
+
